@@ -1,18 +1,18 @@
 CC       = gcc
 CFLAGS   = -g -O0 -Wall
 
-TARGETS = interpreter lexer
+TARGETS = main
 
-interpreter:
-	$(CC) $(CFLAGS) -o interpreter interpreter.c 
+main: lex.yy.c y.tab.c
+	$(CC) $(CFLAGS) -o main lex.yy.c y.tab.c -ll
 	
-lexer: lex.yy.c
-	$(CC) $(CFLAGS) -o lexer lex.yy.c -ll
-	
-lex.yy.c: lex.l
+lex.yy.c: lex.l y.tab.h
 	lex lex.l
+	
+y.tab.h: parse.y
+	yacc -d parse.y
 
 all: $(TARGETS)
 
 clean:
-	rm -f $(TARGETS)
+	rm -f $(TARGETS) *.yy.c *.tab.*
