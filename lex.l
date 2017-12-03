@@ -17,6 +17,8 @@
 "-"  return SUB;
 "*"  return MUL;
 "/"  return DIV;
+"("  return LPAREN;
+")"  return RPAREN;
 
 \r\n?|\n  return CR;
 [ \t] ;

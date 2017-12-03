@@ -8,7 +8,7 @@
 }
 %token <value> INTEGER
 %type <value> primary expression term
-%token CR ADD SUB MUL DIV
+%token CR ADD SUB MUL DIV LPAREN RPAREN
 %%
 program: line
   | program line 
@@ -35,6 +35,10 @@ term: primary
   | term DIV primary
     {
       $$ = $1 / $3;
+    }; 
+  | LPAREN term RPAREN
+    {
+      $$ = $2;
     }; 
 primary: INTEGER
 %%
