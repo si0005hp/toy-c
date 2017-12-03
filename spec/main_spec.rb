@@ -81,4 +81,17 @@ describe 'main' do
       "18",
     ])
   end
+  
+  it 'paren' do
+    result = run_script([
+      "(1)",
+      "(1 + 2)",
+      "(1 * 3)",
+    ])
+    expect(result).to eq([
+      "1",
+      "3",
+      "3",
+    ])
+  end
 end
