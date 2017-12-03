@@ -5,12 +5,10 @@
   extern int yyerror(char const *str);
 %}
 %union {
-  int value;
   Node *node;
 }
-%token <value> INTEGER
-%type <node> primary expression term
-%token CR ADD SUB MUL DIV LPAREN RPAREN
+%type <node> INTEGER primary expression term
+%token CR ADD SUB MUL DIV LPAREN RPAREN INTEGER
 %%
 program: line
   | program line
@@ -43,7 +41,4 @@ term: primary
       $$ = $2;
     };
 primary: INTEGER
-    {
-      $$ = new_int_node($1);
-    };
 %%

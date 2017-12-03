@@ -9,8 +9,7 @@
 
 %%
 [1-9][0-9]*|0 {
-  int i = atoi(yytext);
-  yylval.value = i;
+  yylval.node = new_int_node(atoi(yytext));
   return INTEGER;
 }
 
