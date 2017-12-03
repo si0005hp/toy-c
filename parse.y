@@ -7,16 +7,23 @@
   int value;
 }
 %token <value> INTEGER
-%type <value> factor
+%type <value> primary expression
 %token CR ADD
 %%
 program: line
   | program line 
 line: CR
-  | expression CR;
-expression: factor
-  | expression ADD factor
-factor: INTEGER { printf("Value: %d\n", $1); };
+  | expression CR
+    {
+      int ans = $1;
+      printf("Ans: %d\n", ans);
+    };
+expression: primary
+  | expression ADD primary
+    {
+      $$ = $1 + $3;
+    };
+primary: INTEGER
 %%
 int yyerror(char const *str) {
   fprintf(stderr, "%s\n", str);
