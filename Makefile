@@ -14,5 +14,8 @@ y.tab.h: parse.y
 
 all: $(TARGETS)
 
+test: $(TARGETS)
+	bundle exec rspec
+
 clean:
 	rm -f $(TARGETS) *.yy.c *.tab.*

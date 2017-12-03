@@ -16,7 +16,7 @@ line: CR
   | expression CR
     {
       int ans = $1;
-      printf("Ans: %d\n", ans);
+      printf("%d\n", ans);
     };
 expression: primary
   | expression ADD primary
