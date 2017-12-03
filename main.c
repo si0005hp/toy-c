@@ -29,3 +29,21 @@ Node* new_binop_node(int op, Node *left, Node *right) {
   node->right = right;
   return node;
 }
+
+int expr_node(Node *n) {
+  switch (n->type) {
+    case NODE_INTEGER:
+      return n->value;
+    case NODE_BINOP_ADD:
+      return expr_node(n->left) + expr_node(n->right);
+    case NODE_BINOP_SUB:
+      return expr_node(n->left) - expr_node(n->right);
+    case NODE_BINOP_MUL:
+      return expr_node(n->left) * expr_node(n->right);
+    case NODE_BINOP_DIV:
+      return expr_node(n->left) / expr_node(n->right);
+    default:
+      fprintf(stderr, "Failed expr_node by illegal node type: %d\n", n->type);
+      exit(1);
+  }
+}

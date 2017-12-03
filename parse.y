@@ -13,33 +13,29 @@
 %token CR ADD SUB MUL DIV LPAREN RPAREN
 %%
 program: line
-  | program line 
+  | program line
 line: CR
   | expression CR
     {
-      // int ans = $1;
-      // printf("%d\n", ans);
-    };
+      int ans = expr_node($1);
+      printf("%d\n", ans);
+    }; 
 expression: term
   | expression ADD term
     {
-      // $$ = $1 + $3;
       $$ = new_binop_node(NODE_BINOP_ADD, $1, $3);
     };
   | expression SUB term
     {
-      // $$ = $1 - $3;
       $$ = new_binop_node(NODE_BINOP_SUB, $1, $3);
     };
 term: primary
   | term MUL primary
     {
-      // $$ = $1 * $3;
       $$ = new_binop_node(NODE_BINOP_MUL, $1, $3);
     }; 
   | term DIV primary
     {
-      // $$ = $1 / $3;
       $$ = new_binop_node(NODE_BINOP_DIV, $1, $3);
     };
   | LPAREN expression RPAREN
