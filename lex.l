@@ -1,6 +1,6 @@
 %{
   #include <stdio.h>
-  #include "main.h"
+  #include "toyc.h"
   #include "y.tab.h"
 %}
 

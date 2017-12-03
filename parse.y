@@ -1,6 +1,6 @@
 %{
   #include <stdio.h>
-  #include "main.h"
+  #include "toyc.h"
   extern int yylex(void);
   extern int yyerror(char const *str);
 %}

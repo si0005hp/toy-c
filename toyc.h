@@ -1,5 +1,5 @@
-#ifndef MAIN_H_
-#define MAIN_H_
+#ifndef TOYC_H_
+#define TOYC_H_
 
 enum {
   NODE_INTEGER,
