@@ -102,4 +102,17 @@ describe 'main' do
       "26",
     ])
   end
+  
+  it 'float' do
+    result = run_script([
+      "1.2",
+      "1.2345",
+      "1 + 2.345 + 6",
+    ])
+    expect(result).to eq([
+      "1.2",
+      "1.2345",
+      "9.345",
+    ])
+  end
 end
