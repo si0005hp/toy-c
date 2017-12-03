@@ -23,6 +23,10 @@ expression: primary
     {
       $$ = $1 + $3;
     };
+  | expression SUB primary
+    {
+      $$ = $1 - $3;
+    };
 primary: INTEGER
 %%
 int yyerror(char const *str) {

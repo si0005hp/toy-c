@@ -40,4 +40,17 @@ describe 'main' do
       "15",
     ])
   end
+  
+  it 'sub' do
+    result = run_script([
+      "3-1",
+      "10 - 3 - 2 - 1",
+      "5 + 3 - 2 + 1 - 4 + 9",
+    ])
+    expect(result).to eq([
+      "2",
+      "4",
+      "12",
+    ])
+  end
 end
