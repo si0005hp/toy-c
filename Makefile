@@ -1,5 +1,7 @@
 CC       = gcc
 CFLAGS   = -g -O0 -Wall
+LEX      = lex
+YACC     = yacc
 
 TARGETS = main
 
@@ -7,10 +9,10 @@ main: main.c lex.yy.c y.tab.c
 	$(CC) $(CFLAGS) -o main main.c lex.yy.c y.tab.c -ll
 	
 lex.yy.c: lex.l y.tab.h
-	lex lex.l
+	$(LEX) lex.l
 	
 y.tab.h: parse.y
-	yacc -d parse.y
+	$(YACC) -d parse.y
 
 all: $(TARGETS)
 
