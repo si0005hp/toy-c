@@ -8,6 +8,9 @@
   yylval.value = i;
   return INTEGER;
 }
+\r\n?|\n {
+  return CR;
+}
 . {
   printf("NG\n");
 }
