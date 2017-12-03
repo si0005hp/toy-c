@@ -37,7 +37,7 @@ Node* new_binop_node(int op, Node *left, Node *right) {
   return node;
 }
 
-int expr_node(Node *n) {
+double expr_node(Node *n) {
   switch (n->type) {
     case NODE_INTEGER:
       return n->ival;

@@ -29,6 +29,6 @@ Node* new_int_node(int i);
 Node* new_float_node(double d);
 Node* new_binop_node(int op, Node *left, Node *right);
 
-int expr_node(Node *node);
+double expr_node(Node *node);
 
 #endif
