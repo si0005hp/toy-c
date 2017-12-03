@@ -7,8 +7,8 @@
   int value;
 }
 %token <value> INTEGER
-%type <value> primary expression
-%token CR ADD SUB
+%type <value> primary expression term
+%token CR ADD SUB MUL
 %%
 program: line
   | program line 
@@ -18,15 +18,20 @@ line: CR
       int ans = $1;
       printf("%d\n", ans);
     };
-expression: primary
-  | expression ADD primary
+expression: term
+  | expression ADD term
     {
       $$ = $1 + $3;
     };
-  | expression SUB primary
+  | expression SUB term
     {
       $$ = $1 - $3;
     };
+term: primary
+  | term MUL primary
+    {
+      $$ = $1 * $3;
+    }; 
 primary: INTEGER
 %%
 int yyerror(char const *str) {

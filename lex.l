@@ -18,6 +18,9 @@
 "-" {
   return SUB;
 }
+"*" {
+  return MUL;
+}
 \r\n?|\n {
   return CR;
 }
