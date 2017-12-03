@@ -8,12 +8,14 @@
 }
 %token <value> INTEGER
 %type <value> factor
-%token CR
+%token CR ADD
 %%
 program: line
   | program line 
 line: CR
-  | factor CR;
+  | expression CR;
+expression: factor
+  | expression ADD factor
 factor: INTEGER { printf("Value: %d\n", $1); };
 %%
 int yyerror(char const *str) {

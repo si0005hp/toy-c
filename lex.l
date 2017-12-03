@@ -12,10 +12,12 @@
   yylval.value = i;
   return INTEGER;
 }
+"+" {
+  return ADD;
+}
 \r\n?|\n {
   return CR;
 }
 . {
-  printf("NG\n");
 }
 %%
