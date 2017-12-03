@@ -12,22 +12,15 @@
   yylval.value = i;
   return INTEGER;
 }
-"+" {
-  return ADD;
-}
-"-" {
-  return SUB;
-}
-"*" {
-  return MUL;
-}
-"/" {
-  return DIV;
-}
-\r\n?|\n {
-  return CR;
-}
+
+"+"  return ADD;
+"-"  return SUB;
+"*"  return MUL;
+"/"  return DIV;
+
+\r\n?|\n  return CR;
 [ \t] ;
+
 . {
   printf("unknown: %s\n", yytext);
   exit(1);
