@@ -18,6 +18,9 @@
 \r\n?|\n {
   return CR;
 }
+[ \t] ;
 . {
+  printf("unknown: %s\n", yytext);
+  exit(1);
 }
 %%
