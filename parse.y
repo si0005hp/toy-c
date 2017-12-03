@@ -1,10 +1,12 @@
 %{
   #include <stdio.h>
+  #include "main.h"
   extern int yylex(void);
   extern int yyerror(char const *str);
 %}
 %union {
   int value;
+  Node *node;
 }
 %token <value> INTEGER
 %type <value> primary expression term
