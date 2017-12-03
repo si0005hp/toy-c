@@ -22,4 +22,6 @@ typedef struct Node {
   };
 } Node;
 
+Node* new_int_node(int i);
+
 #endif
