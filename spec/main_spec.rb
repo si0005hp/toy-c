@@ -68,4 +68,17 @@ describe 'main' do
       "-15",
     ])
   end
+  
+  it 'mul' do
+    result = run_script([
+      "10/2",
+      "99 / 3 / 11",
+      "10 / 2 * 3 + 5 - 3 + 4 * 2 / 8",
+    ])
+    expect(result).to eq([
+      "5",
+      "3",
+      "18",
+    ])
+  end
 end

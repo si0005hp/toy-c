@@ -21,6 +21,9 @@
 "*" {
   return MUL;
 }
+"/" {
+  return DIV;
+}
 \r\n?|\n {
   return CR;
 }
