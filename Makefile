@@ -18,4 +18,4 @@ test: $(TARGETS)
 	bundle exec rspec
 
 clean:
-	rm -f $(TARGETS) *.yy.c *.tab.*
+	rm -f $(TARGETS) *.yy.c *.tab.* *.output
