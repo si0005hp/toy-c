@@ -69,7 +69,7 @@ describe 'main' do
     ])
   end
   
-  it 'mul' do
+  it 'div' do
     result = run_script([
       "10/2",
       "99 / 3 / 11",
