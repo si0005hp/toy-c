@@ -21,3 +21,11 @@ Node* new_int_node(int i) {
   node->value = i;
   return node;
 }
+
+Node* new_binop_node(int op, Node *left, Node *right) {
+  Node *node = malloc(sizeof(Node));
+  node->type = op;
+  node->left = left;
+  node->right = right;
+  return node;
+}

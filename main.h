@@ -23,5 +23,6 @@ typedef struct Node {
 } Node;
 
 Node* new_int_node(int i);
+Node* new_binop_node(int op, Node *left, Node *right);
 
 #endif
