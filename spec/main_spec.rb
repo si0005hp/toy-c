@@ -85,13 +85,15 @@ describe 'main' do
   it 'paren' do
     result = run_script([
       "(1)",
-      "(1 + 2)",
-      "(1 * 3)",
+      "(1 + 3)",
+      "(2 * 3)",
+      "(1 + 3) * 5",
     ])
     expect(result).to eq([
       "1",
-      "3",
-      "3",
+      "4",
+      "6",
+      "20",
     ])
   end
 end

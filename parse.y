@@ -35,11 +35,11 @@ term: primary
   | term DIV primary
     {
       $$ = $1 / $3;
-    }; 
-  | LPAREN term RPAREN
+    };
+  | LPAREN expression RPAREN
     {
       $$ = $2;
-    }; 
+    };
 primary: INTEGER
 %%
 int yyerror(char const *str) {
