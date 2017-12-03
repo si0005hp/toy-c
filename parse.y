@@ -42,11 +42,3 @@ term: primary
     };
 primary: INTEGER
 %%
-int yyerror(char const *str) {
-  fprintf(stderr, "%s\n", str);
-  return 0;
-}
-int main(void) {
-  yyparse();
-  return 0;
-}

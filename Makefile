@@ -3,8 +3,8 @@ CFLAGS   = -g -O0 -Wall
 
 TARGETS = main
 
-main: lex.yy.c y.tab.c
-	$(CC) $(CFLAGS) -o main lex.yy.c y.tab.c -ll
+main: main.c lex.yy.c y.tab.c
+	$(CC) $(CFLAGS) -o main main.c lex.yy.c y.tab.c -ll
 	
 lex.yy.c: lex.l y.tab.h
 	lex lex.l
