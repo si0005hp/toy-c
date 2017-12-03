@@ -18,7 +18,14 @@ int yyerror(char const *str) {
 Node* new_int_node(int i) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_INTEGER;
-  node->value = i;
+  node->ival = i;
+  return node;
+}
+
+Node* new_float_node(double d) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_FLOAT;
+  node->fval = d;
   return node;
 }
 
@@ -33,7 +40,9 @@ Node* new_binop_node(int op, Node *left, Node *right) {
 int expr_node(Node *n) {
   switch (n->type) {
     case NODE_INTEGER:
-      return n->value;
+      return n->ival;
+    case NODE_FLOAT:
+      return n->fval;
     case NODE_BINOP_ADD:
       return expr_node(n->left) + expr_node(n->right);
     case NODE_BINOP_SUB:

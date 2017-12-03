@@ -12,6 +12,12 @@
   yylval.node = new_int_node(atoi(yytext));
   return INTEGER;
 }
+(([1-9][0-9]*)|0)(\.[0-9][0-9]*)? {
+  double val;
+  sscanf(yytext, "%lf", &val);
+  yylval.node = new_float_node(val);
+  return FLOAT;
+}
 
 "+"  return ADD;
 "-"  return SUB;

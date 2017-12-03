@@ -7,8 +7,8 @@
 %union {
   Node *node;
 }
-%type <node> INTEGER primary expression term
-%token CR ADD SUB MUL DIV LPAREN RPAREN INTEGER
+%type <node> INTEGER FLOAT primary expression term
+%token CR ADD SUB MUL DIV LPAREN RPAREN INTEGER FLOAT
 %%
 program: line
   | program line
@@ -41,4 +41,5 @@ term: primary
       $$ = $2;
     };
 primary: INTEGER
+  | FLOAT
 %%
