@@ -15,6 +15,9 @@
 "+" {
   return ADD;
 }
+"-" {
+  return SUB;
+}
 \r\n?|\n {
   return CR;
 }

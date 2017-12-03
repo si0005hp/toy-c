@@ -8,7 +8,7 @@
 }
 %token <value> INTEGER
 %type <value> primary expression
-%token CR ADD
+%token CR ADD SUB
 %%
 program: line
   | program line 
