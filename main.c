@@ -37,22 +37,86 @@ Node* new_binop_node(int op, Node *left, Node *right) {
   return node;
 }
 
-double expr_node(Node *n) {
+ICode iCodes[100];
+int ic_idx;
+
+double stack[200];
+int sp;
+
+void compile_node(Node *n) {
   switch (n->type) {
     case NODE_INTEGER:
-      return n->ival;
+      iCodes[ic_idx].opcode = IC_PUSH;
+      iCodes[ic_idx].operand = n->ival;
+      break;
     case NODE_FLOAT:
-      return n->fval;
+      iCodes[ic_idx].opcode = IC_PUSH;
+      iCodes[ic_idx].operand = n->fval;
+      break;
     case NODE_BINOP_ADD:
-      return expr_node(n->left) + expr_node(n->right);
+      compile_node(n->left);
+      compile_node(n->right);
+      iCodes[ic_idx].opcode = IC_ADD;
+      break;
     case NODE_BINOP_SUB:
-      return expr_node(n->left) - expr_node(n->right);
+      compile_node(n->left);
+      compile_node(n->right);
+      iCodes[ic_idx].opcode = IC_SUB;
+      break;
     case NODE_BINOP_MUL:
-      return expr_node(n->left) * expr_node(n->right);
+      compile_node(n->left);
+      compile_node(n->right);
+      iCodes[ic_idx].opcode = IC_MUL;
+      break;
     case NODE_BINOP_DIV:
-      return expr_node(n->left) / expr_node(n->right);
+      compile_node(n->left);
+      compile_node(n->right);
+      iCodes[ic_idx].opcode = IC_DIV;
+      break;
     default:
-      fprintf(stderr, "Failed expr_node by illegal node type: %d\n", n->type);
+      fprintf(stderr, "Failed to compile_node by illegal node type: %d\n",
+          n->type);
       exit(1);
+  }
+  ++ic_idx;
+}
+
+void execute_code() {
+  double x, y;
+  for (int i = 0; i < ic_idx; i++) {
+    switch (iCodes[i].opcode) {
+      case IC_PUSH:
+        stack[sp++] = iCodes[i].operand;
+        break;
+      case IC_ADD:
+        y = stack[--sp];
+        x = stack[--sp];
+        stack[sp++] = x + y;
+        break;
+      case IC_SUB:
+        y = stack[--sp];
+        x = stack[--sp];
+        stack[sp++] = x - y;
+        break;
+      case IC_MUL:
+        y = stack[--sp];
+        x = stack[--sp];
+        stack[sp++] = x * y;
+        break;
+      case IC_DIV:
+        y = stack[--sp];
+        x = stack[--sp];
+        stack[sp++] = x / y;
+        break;
+    }
+  }
+
+  x = stack[--sp];
+  printf("%g\n", x);
+}
+
+void debug_code() {
+  for (int i = 0; i < ic_idx; i++) {
+    printf("opcode: %i, operand:%g \n", iCodes[i].opcode, iCodes[i].operand);
   }
 }

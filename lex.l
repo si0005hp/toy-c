@@ -2,6 +2,7 @@
   #include <stdio.h>
   #include "toyc.h"
   #include "y.tab.h"
+  extern int fileno(FILE *);
 %}
 
 %option noinput

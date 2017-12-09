@@ -25,10 +25,25 @@ typedef struct Node {
   };
 } Node;
 
+typedef struct ICode {
+  int opcode;
+  double operand;
+} ICode;
+
+enum {
+  IC_PUSH,
+  IC_ADD,
+  IC_SUB,
+  IC_MUL,
+  IC_DIV
+};
+
 Node* new_int_node(int i);
 Node* new_float_node(double d);
 Node* new_binop_node(int op, Node *left, Node *right);
 
-double expr_node(Node *node);
+void compile_node(Node *node);
+void execute_code();
+void debug_code();
 
 #endif

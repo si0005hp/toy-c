@@ -15,8 +15,9 @@ program: line
 line: CR
   | expression CR
     {
-      double ans = expr_node($1);
-      printf("%g\n", ans);
+      Node *node = $1;
+      compile_node(node);
+      execute_code();
     }; 
 expression: term
   | expression ADD term

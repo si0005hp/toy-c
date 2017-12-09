@@ -1,5 +1,5 @@
 CC       = gcc
-CFLAGS   = -g -O0 -Wall
+CFLAGS   = -g -O0 -Wall -std=c99
 LEX      = lex
 YACC     = yacc
 
