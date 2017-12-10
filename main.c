@@ -37,6 +37,13 @@ Node* new_binop_node(int op, Node *left, Node *right) {
   return node;
 }
 
+Node* new_idt_node(char *idtname) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_IDT;
+  node->idtname = idtname;
+  return node;
+}
+
 ICode iCodes[100];
 int ic_idx;
 

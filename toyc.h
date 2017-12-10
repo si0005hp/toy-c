@@ -7,7 +7,8 @@ enum {
   NODE_BINOP_ADD,
   NODE_BINOP_SUB,
   NODE_BINOP_MUL,
-  NODE_BINOP_DIV
+  NODE_BINOP_DIV,
+  NODE_IDT
 };
 
 typedef struct Node {
@@ -22,6 +23,8 @@ typedef struct Node {
       struct Node *left;
       struct Node *right;
     };
+    // identifier
+    char *idtname;
   };
 } Node;
 
@@ -41,6 +44,7 @@ enum {
 Node* new_int_node(int i);
 Node* new_float_node(double d);
 Node* new_binop_node(int op, Node *left, Node *right);
+Node* new_idt_node(char *idtname);
 
 void compile_node(Node *node);
 void execute_code();
