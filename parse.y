@@ -41,10 +41,10 @@ term: primary
     {
       $$ = new_binop_node(NODE_BINOP_DIV, $1, $3);
     };
+primary: INTEGER
+  | FLOAT
   | LPAREN expression RPAREN
     {
       $$ = $2;
     };
-primary: INTEGER
-  | FLOAT
 %%
