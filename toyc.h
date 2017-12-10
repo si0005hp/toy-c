@@ -44,6 +44,7 @@ Node* new_binop_node(int op, Node *left, Node *right);
 
 void compile_node(Node *node);
 void execute_code();
+void print_result();
 void debug_code();
 
 #endif

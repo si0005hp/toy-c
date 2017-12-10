@@ -110,9 +110,10 @@ void execute_code() {
         break;
     }
   }
+}
 
-  x = stack[--sp];
-  printf("%g\n", x);
+void print_result() {
+  printf("%g\n", stack[--sp]); // Print popped stack element as calculated result
 }
 
 void debug_code() {

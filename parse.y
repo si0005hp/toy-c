@@ -18,6 +18,7 @@ line: CR
       Node *node = $1;
       compile_node(node);
       execute_code();
+      print_result();
     }; 
 expression: term
   | expression ADD term
