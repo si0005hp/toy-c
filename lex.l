@@ -27,6 +27,8 @@
 "("  return LPAREN;
 ")"  return RPAREN;
 
+"print"  return PRINT; // Temporary
+
 \r\n?|\n  return CR;
 [ \t] ;
 
