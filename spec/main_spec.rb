@@ -21,9 +21,7 @@ describe 'main' do
     arr = []
     commands.each do |command|
       IO.popen("./main", "r+") do |pipe|
-        pipe.puts command
-        pipe.puts "print"
-
+        pipe.puts "print " + command
         pipe.close_write
 
         # Read entire output

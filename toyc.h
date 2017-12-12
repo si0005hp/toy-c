@@ -8,7 +8,9 @@ enum {
   NODE_BINOP_SUB,
   NODE_BINOP_MUL,
   NODE_BINOP_DIV,
-  NODE_IDT
+  NODE_IDT,
+  NODE_INIT,
+  NODE_PRINT // Temporary
 };
 
 typedef struct Node {
@@ -18,13 +20,15 @@ typedef struct Node {
     int ival;
     // float
     double fval;
-    // bin operator
+    // binop, let
     struct {
       struct Node *left;
       struct Node *right;
     };
     // identifier
     char *idtname;
+    // print (Temporary)
+    struct Node *target;
   };
 } Node;
 
@@ -38,13 +42,22 @@ enum {
   IC_ADD,
   IC_SUB,
   IC_MUL,
-  IC_DIV
+  IC_DIV,
+  IC_STOREV,
+  IC_PRINT, // Temporary
 };
+
+typedef struct Env {
+  char *varname;
+  int idx;
+} Env;
 
 Node* new_int_node(int i);
 Node* new_float_node(double d);
 Node* new_binop_node(int op, Node *left, Node *right);
 Node* new_idt_node(char *idtname);
+Node* new_init_node(Node *left, Node *right);
+Node* new_print_node(Node *target); // Temporary
 
 void compile_node(Node *node);
 void execute_code();

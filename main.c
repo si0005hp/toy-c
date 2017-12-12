@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "toyc.h"
 #include "y.tab.h"
 
 int yyerror(char const *str);
+int new_var(char *varname);
+int idx_var(char *varname);
 
 int main(int argc, char **argv) {
   yyparse();
@@ -44,11 +47,29 @@ Node* new_idt_node(char *idtname) {
   return node;
 }
 
+Node* new_init_node(Node *left, Node *right) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_INIT;
+  node->left = left;
+  node->right = right;
+  return node;
+}
+
+Node* new_print_node(Node *target) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_PRINT;
+  node->target = target;
+  return node;
+}
+
 ICode iCodes[100];
 int ic_idx;
 
 double stack[200];
 int sp;
+
+Env env[200];
+int e_idx;
 
 void compile_node(Node *n) {
   switch (n->type) {
@@ -80,12 +101,46 @@ void compile_node(Node *n) {
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_DIV;
       break;
+    case NODE_IDT:
+      break;
+    case NODE_INIT:
+      compile_node(n->right);
+      iCodes[ic_idx].opcode = IC_STOREV;
+      iCodes[ic_idx].operand = new_var(n->left->idtname);
+      break;
+    case NODE_PRINT:
+      switch (n->target->type) {
+        case NODE_IDT:
+          iCodes[ic_idx].opcode = IC_PRINT;
+          iCodes[ic_idx].operand = idx_var(n->target->idtname);
+          break;
+        default:
+          compile_node(n->target);
+          iCodes[ic_idx].opcode = IC_PRINT;
+          iCodes[ic_idx].operand = -1;
+          break;
+      }
+      break;
     default:
       fprintf(stderr, "Failed to compile_node by illegal node type: %d\n",
           n->type);
       exit(1);
   }
   ++ic_idx;
+}
+
+int new_var(char *varname) {
+  env[e_idx].varname = varname;
+  env[e_idx].idx = e_idx;
+  return e_idx++;
+}
+
+int idx_var(char *varname) {
+  for (int i = e_idx - 1; i >= 0; i--) {
+    if (strcmp(env[i].varname, varname) == 0)
+      return env[i].idx;
+  }
+  return -1;
 }
 
 void execute_code() {
@@ -114,6 +169,18 @@ void execute_code() {
         y = stack[--sp];
         x = stack[--sp];
         stack[sp++] = x / y;
+        break;
+      case IC_STOREV:
+        y = stack[--sp];
+        stack[(int) iCodes[i].operand] = y;
+        break;
+      case IC_PRINT:
+        if (iCodes[i].operand == -1) {
+          y = stack[--sp];
+        } else {
+          y = stack[(int) iCodes[i].operand];
+        }
+        printf("%g\n", y);
         break;
     }
   }

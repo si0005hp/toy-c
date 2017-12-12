@@ -8,36 +8,38 @@
 %union {
   Node *node;
 }
-%type <node> INTEGER FLOAT primary expression term statement print_statement program
+%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement print_statement print_var_statement program
 %token CR INT ADD SUB MUL DIV LPAREN RPAREN SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
 %%
 program: statement print_var_statement
     {
-      Node *node = $1;
-      compile_node(node);
+      compile_node($1);
+      compile_node($2);
       execute_code();
-      print_result();
       exit(0);
     };
   | print_statement
     {
-      Node *node = $1;
-      compile_node(node);
+      compile_node($1);
       execute_code();
-      print_result();
       exit(0);
     }
-statement: INT IDENTIFIER EQ expression SEMICOLON CR
+statement: INT IDENTIFIER SEMICOLON CR
     {
-      $$ = $4;
+    }
+  | INT IDENTIFIER EQ expression SEMICOLON CR
+    {
+      $$ = new_init_node($2, $4);
     }
 print_statement: PRINT expression CR
     {
-      $$ = $2;
+      $$ = new_print_node($2);
     }
 print_var_statement: PRINT IDENTIFIER CR
-
+    {
+      $$ = new_print_node($2);
+    }
 expression: term
   | expression ADD term
     {
