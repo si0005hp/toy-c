@@ -10,7 +10,8 @@ enum {
   NODE_BINOP_DIV,
   NODE_IDT,
   NODE_INIT,
-  NODE_PRINT // Temporary
+  NODE_PRINT, // Temporary
+  NODE_NODES
 };
 
 typedef struct Node {
@@ -29,6 +30,10 @@ typedef struct Node {
     char *idtname;
     // print (Temporary)
     struct Node *target;
+    // nodes
+    struct {
+      struct Node **nodes;
+    };
   };
 } Node;
 
