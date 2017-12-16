@@ -66,6 +66,7 @@ Node* new_idt_node(char *idtname);
 Node* new_init_node(Node *left, Node *right);
 Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
+Node* new_nodes();
 
 void compile_node(Node *node);
 void execute_code();

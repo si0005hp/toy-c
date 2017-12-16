@@ -20,7 +20,8 @@ program: statements
     };
 statements: statement
     {
-      $$ = $1;
+      $$ = new_nodes();
+      append_nodes($$, $1);
     }
   | statements statement
     {
@@ -35,11 +36,11 @@ statement: INT IDENTIFIER SEMICOLON CR
     {
       $$ = new_init_node($2, $4);
     }
-  | PRINT expression CR
+  | PRINT expression SEMICOLON CR
     {
       $$ = new_print_node($2);
     }
-  | PRINT IDENTIFIER CR
+  | PRINT IDENTIFIER SEMICOLON CR
     {
       $$ = new_print_node($2);
     }

@@ -72,6 +72,14 @@ void append_nodes(Node *nodes, Node *node) {
   _n->len++;
 }
 
+Node* new_nodes() {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_NODES;
+  node->len = 0;
+  node->max = 0;
+  return node;
+}
+
 ICode iCodes[100];
 int ic_idx;
 
