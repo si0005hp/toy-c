@@ -40,9 +40,9 @@ statement: INT var SEMICOLON CR
     {
       $$ = new_init_node($2, $4);
     }
-  | PRINT expression SEMICOLON CR
+  | PRINT LPAREN expression RPAREN SEMICOLON CR
     {
-      $$ = new_print_node($2);
+      $$ = new_print_node($3);
     }
 expression: term
   | expression ADD term

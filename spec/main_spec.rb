@@ -21,7 +21,7 @@ describe 'main' do
     arr = []
     commands.each do |command|
       IO.popen("./main", "r+") do |pipe|
-        pipe.puts "print " + command + ";"
+        pipe.puts "print(" + command + ");"
         pipe.close_write
 
         # Read entire output
@@ -138,21 +138,21 @@ describe 'main' do
   it 'var' do
     result = run_script([
       "int i = 5;",
-      "print i;",
+      "print(i);",
     ])
     expect(result).to eq(["5"])
 
     result = run_script([
       "int i = 1 + 3 * 4 / 2 + 90 - 10;",
-      "print i;",
+      "print(i);",
     ])
     expect(result).to eq(["87"])
 
     result = run_script([
       "int x = 3;",
       "int y = 5;",
-      "print x;",
-      "print y;",
+      "print(x);",
+      "print(y);",
     ])
     expect(result).to eq([
       "3",
@@ -162,7 +162,7 @@ describe 'main' do
     result = run_script([
       "int x = 3;",
       "x = 5;",
-      "print x;",
+      "print(x);",
     ])
     expect(result).to eq([
       "5",
@@ -172,10 +172,10 @@ describe 'main' do
       "int x = 5;",
       "int y = x + 3;",
       "int z = x + y + 1;",
-      "print x;",
-      "print y;",
-      "print z;",
-      "print x + y + z;",
+      "print(x);",
+      "print(y);",
+      "print(z);",
+      "print(x + y + z);",
     ])
     expect(result).to eq([
       "5",
