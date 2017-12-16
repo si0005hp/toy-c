@@ -24,7 +24,8 @@ statements: statement
     }
   | statements statement
     {
-      
+      $$ = $1;
+      append_nodes($$, $2);
     }
 statement: INT IDENTIFIER SEMICOLON CR
     {

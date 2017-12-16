@@ -62,6 +62,16 @@ Node* new_print_node(Node *target) {
   return node;
 }
 
+void append_nodes(Node *nodes, Node *node) {
+  Node *_n = nodes;
+  if (_n->len == _n->max) {
+    _n->max += 10;
+    _n->nodes = realloc(_n->nodes, sizeof(Node*) * _n->max);
+  }
+  _n->nodes[_n->len] = node;
+  _n->len++;
+}
+
 ICode iCodes[100];
 int ic_idx;
 
@@ -120,6 +130,10 @@ void compile_node(Node *n) {
           iCodes[ic_idx].operand = -1;
           break;
       }
+      break;
+    case NODE_NODES:
+      for (int i = 0; i < n->len; i++)
+        compile_node(n->nodes[i]);
       break;
     default:
       fprintf(stderr, "Failed to compile_node by illegal node type: %d\n",
