@@ -12,7 +12,7 @@ lex.yy.c: lex.l y.tab.h
 	$(LEX) lex.l
 	
 y.tab.h: parse.y
-	$(YACC) -d parse.y
+	$(YACC) -dv parse.y
 
 all: $(TARGETS)
 
