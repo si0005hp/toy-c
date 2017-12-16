@@ -9,7 +9,7 @@
   Node *node;
 }
 %type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var
-%token CR INT ADD SUB MUL DIV LPAREN RPAREN SEMICOLON EQ IDENTIFIER INTEGER FLOAT
+%token INT ADD SUB MUL DIV LPAREN RPAREN SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
 %%
 program: statements
@@ -28,19 +28,19 @@ statements: statement
       $$ = $1;
       append_nodes($$, $2);
     }
-statement: INT var SEMICOLON CR
+statement: INT var SEMICOLON
     {
       $$ = $2;
     }
-  | var EQ expression SEMICOLON CR
+  | var EQ expression SEMICOLON
     {
       $$ = new_let_node($1, $3);
     }
-  | INT var EQ expression SEMICOLON CR
+  | INT var EQ expression SEMICOLON
     {
       $$ = new_init_node($2, $4);
     }
-  | PRINT LPAREN expression RPAREN SEMICOLON CR
+  | PRINT LPAREN expression RPAREN SEMICOLON
     {
       $$ = new_print_node($3);
     }

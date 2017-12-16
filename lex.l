@@ -22,7 +22,7 @@
 
 "print"  return PRINT; // Temporary
 
-\r\n?|\n  return CR;
+\r\n?|\n ;
 [ \t] ;
 
 [A-Za-z_][A-Za-z_0-9]* {
