@@ -7,6 +7,7 @@
 int yyerror(char const *str);
 int new_var(char *varname);
 int idx_var(char *varname);
+void reserve_sp(int e_idx);
 
 int main(int argc, char **argv) {
   yyparse();
@@ -165,9 +166,16 @@ int idx_var(char *varname) {
   return -1;
 }
 
+void reserve_sp(int e_idx) {
+  for (int i = 0; i < e_idx; i++) {
+    stack[sp++] = 0;
+  }
+}
+
 void execute_code() {
+  reserve_sp(e_idx);
   double x, y;
-  for (int i = 0; i < ic_idx; i++) {
+  for (int i = 0; i < ic_idx - 1; i++) {
     switch (iCodes[i].opcode) {
       case IC_PUSH:
         stack[sp++] = iCodes[i].operand;
@@ -213,7 +221,31 @@ void print_result() {
 }
 
 void debug_code() {
-  for (int i = 0; i < ic_idx; i++) {
-    printf("opcode: %i, operand:%g \n", iCodes[i].opcode, iCodes[i].operand);
+  for (int i = 0; i < ic_idx - 1; i++) {
+    char *opcode;
+    switch (iCodes[i].opcode) {
+      case 0:
+        opcode = "IC_PUSH";
+        break;
+      case 1:
+        opcode = "IC_ADD";
+        break;
+      case 2:
+        opcode = "IC_SUB";
+        break;
+      case 3:
+        opcode = "IC_MUL";
+        break;
+      case 4:
+        opcode = "IC_DIV";
+        break;
+      case 5:
+        opcode = "IC_STOREV";
+        break;
+      case 6:
+        opcode = "IC_PRINT";
+        break;
+    }
+    printf("opcode: [%-10s], operand:%g \n", opcode, iCodes[i].operand);
   }
 }

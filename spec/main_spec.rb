@@ -134,4 +134,29 @@ describe 'main' do
       "9.345",
     ])
   end
+
+  it 'var' do
+    result = run_script([
+      "int i = 5;",
+      "print i;",
+    ])
+    expect(result).to eq(["5"])
+
+    result = run_script([
+      "int i = 1 + 3 * 4 / 2 + 90 - 10;",
+      "print i;",
+    ])
+    expect(result).to eq(["87"])
+
+    result = run_script([
+      "int x = 3;",
+      "int y = 5;",
+      "print x;",
+      "print y;",
+    ])
+    expect(result).to eq([
+      "3",
+      "5",
+    ])
+  end
 end
