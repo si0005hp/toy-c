@@ -167,5 +167,21 @@ describe 'main' do
     expect(result).to eq([
       "5",
     ])
+
+    result = run_script([
+      "int x = 5;",
+      "int y = x + 3;",
+      "int z = x + y + 1;",
+      "print x;",
+      "print y;",
+      "print z;",
+      "print x + y + z;",
+    ])
+    expect(result).to eq([
+      "5",
+      "8",
+      "14",
+      "27",
+    ])
   end
 end

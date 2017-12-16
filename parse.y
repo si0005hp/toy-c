@@ -8,7 +8,7 @@
 %union {
   Node *node;
 }
-%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program
+%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var
 %token CR INT ADD SUB MUL DIV LPAREN RPAREN SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
 %%
@@ -28,23 +28,19 @@ statements: statement
       $$ = $1;
       append_nodes($$, $2);
     }
-statement: INT IDENTIFIER SEMICOLON CR
+statement: INT var SEMICOLON CR
     {
       $$ = $2;
     }
-  | IDENTIFIER EQ expression SEMICOLON CR
+  | var EQ expression SEMICOLON CR
     {
       $$ = new_let_node($1, $3);
     }
-  | INT IDENTIFIER EQ expression SEMICOLON CR
+  | INT var EQ expression SEMICOLON CR
     {
       $$ = new_init_node($2, $4);
     }
   | PRINT expression SEMICOLON CR
-    {
-      $$ = new_print_node($2);
-    }
-  | PRINT IDENTIFIER SEMICOLON CR
     {
       $$ = new_print_node($2);
     }
@@ -66,10 +62,12 @@ term: primary
     {
       $$ = new_binop_node(NODE_BINOP_DIV, $1, $3);
     };
+var: IDENTIFIER
 primary: INTEGER
   | FLOAT
   | LPAREN expression RPAREN
     {
       $$ = $2;
     };
+  | var
 %%

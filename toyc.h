@@ -52,6 +52,7 @@ enum {
   IC_MUL,
   IC_DIV,
   IC_STOREV,
+  IC_LOADV,
   IC_PRINT, // Temporary
 };
 

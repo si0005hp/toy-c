@@ -129,6 +129,8 @@ void compile_node(Node *n) {
       iCodes[ic_idx].opcode = IC_DIV;
       break;
     case NODE_IDT:
+      iCodes[ic_idx].opcode = IC_LOADV;
+      iCodes[ic_idx].operand = idx_var(n->idtname);
       break;
     case NODE_LET:
       compile_node(n->right);
@@ -216,6 +218,10 @@ void execute_code() {
       case IC_STOREV:
         y = stack[--sp];
         stack[(int) iCodes[i].operand] = y;
+        break;
+      case IC_LOADV:
+        y = stack[(int) iCodes[i].operand];
+        stack[sp++] = y;
         break;
       case IC_PRINT:
         if (iCodes[i].operand == -1) {
