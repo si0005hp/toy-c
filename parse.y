@@ -32,6 +32,10 @@ statement: INT IDENTIFIER SEMICOLON CR
     {
       $$ = $2;
     }
+  | IDENTIFIER EQ expression SEMICOLON CR
+    {
+      $$ = new_let_node($1, $3);
+    }
   | INT IDENTIFIER EQ expression SEMICOLON CR
     {
       $$ = new_init_node($2, $4);

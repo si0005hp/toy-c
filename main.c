@@ -48,6 +48,14 @@ Node* new_idt_node(char *idtname) {
   return node;
 }
 
+Node* new_let_node(Node *left, Node *right) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_LET;
+  node->left = left;
+  node->right = right;
+  return node;
+}
+
 Node* new_init_node(Node *left, Node *right) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_INIT;
@@ -121,6 +129,11 @@ void compile_node(Node *n) {
       iCodes[ic_idx].opcode = IC_DIV;
       break;
     case NODE_IDT:
+      break;
+    case NODE_LET:
+      compile_node(n->right);
+      iCodes[ic_idx].opcode = IC_STOREV;
+      iCodes[ic_idx].operand = idx_var(n->left->idtname);
       break;
     case NODE_INIT:
       compile_node(n->right);
