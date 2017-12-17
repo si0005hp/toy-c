@@ -17,6 +17,8 @@
 "/"  return DIV;
 "("  return LPAREN;
 ")"  return RPAREN;
+"{"  return LC;
+"}"  return RC;
 ";"  return SEMICOLON;
 "="  return EQ;
 

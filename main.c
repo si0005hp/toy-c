@@ -7,7 +7,8 @@
 int yyerror(char const *str);
 int new_var(char *varname);
 int idx_var(char *varname);
-void reserve_sp(int e_idx);
+int new_label(char *name, int addr);
+int resolve_addr(char *name);
 
 int main(int argc, char **argv) {
   yyparse();
@@ -89,14 +90,24 @@ Node* new_nodes() {
   return node;
 }
 
+Node* new_funcdef_node(Node *idt, Node *block) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_FUNC_DEF;
+  node->fname = idt->idtname;
+  node->block = block;
+  return node;
+}
+
 ICode iCodes[100];
 int ic_idx;
 
 double stack[200];
-int sp;
 
 Env env[200];
 int e_idx;
+
+Label labels[100];
+int l_idx;
 
 void compile_node(Node *n) {
   switch (n->type) {
@@ -159,6 +170,21 @@ void compile_node(Node *n) {
       for (int i = 0; i < n->len; i++)
         compile_node(n->nodes[i]);
       break;
+    case NODE_FUNC_DEF: {
+      int ic_idx_save = ic_idx;
+
+      ic_idx++;
+      ic_idx++;
+      e_idx = 0;
+      compile_node(n->block);
+      iCodes[ic_idx].opcode = IC_RET;
+
+      iCodes[ic_idx_save].opcode = IC_ENTRY;
+      new_label(n->fname, ic_idx_save);
+      iCodes[ic_idx_save + 1].opcode = IC_FRAME;
+      iCodes[ic_idx_save + 1].operand = e_idx;
+      break;
+    }
     default:
       fprintf(stderr, "Failed to compile_node by illegal node type: %d\n",
           n->type);
@@ -181,19 +207,35 @@ int idx_var(char *varname) {
   return -1;
 }
 
-void reserve_sp(int e_idx) {
-  for (int i = 0; i < e_idx; i++) {
-    stack[sp++] = 0;
+int new_label(char *name, int addr) {
+  labels[l_idx].name = name;
+  labels[l_idx].addr = addr;
+  return l_idx++;
+}
+
+int resolve_addr(char *name) {
+  for (int i = 0; i < l_idx; i++) {
+    if (strcmp(labels[i].name, name) == 0)
+      return labels[i].addr;
   }
+  return -1;
 }
 
 void execute_code() {
-  reserve_sp(e_idx);
+  int pc, sp;
+
+  sp = 0;
+  pc = resolve_addr("main");
+  if (pc == -1) {
+    fprintf(stderr, "Not found entry point: %s\n", "main");
+    exit(1);
+  }
+
   double x, y;
-  for (int i = 0; i < ic_idx - 1; i++) {
-    switch (iCodes[i].opcode) {
+  for (;;) {
+    switch (iCodes[pc].opcode) {
       case IC_PUSH:
-        stack[sp++] = iCodes[i].operand;
+        stack[sp++] = iCodes[pc].operand;
         break;
       case IC_ADD:
         y = stack[--sp];
@@ -217,26 +259,38 @@ void execute_code() {
         break;
       case IC_STOREV:
         y = stack[--sp];
-        stack[(int) iCodes[i].operand] = y;
+        stack[(int) iCodes[pc].operand] = y;
         break;
       case IC_LOADV:
-        y = stack[(int) iCodes[i].operand];
+        y = stack[(int) iCodes[pc].operand];
         stack[sp++] = y;
         break;
       case IC_PRINT:
-        if (iCodes[i].operand == -1) {
+        if (iCodes[pc].operand == -1) {
           y = stack[--sp];
         } else {
-          y = stack[(int) iCodes[i].operand];
+          y = stack[(int) iCodes[pc].operand];
         }
         printf("%g\n", y);
         break;
+      case IC_ENTRY:
+        break;
+      case IC_RET:
+        break;
+      case IC_FRAME:
+        for (int i = 0; i < iCodes[pc].operand; i++) {
+          stack[sp++] = 0;
+        }
+        break;
+      default:
+        fprintf(stderr, "Unknown opcode: %d\n", iCodes[pc].opcode);
+        exit(1);
+    }
+    pc++;
+    if (pc > ic_idx) {
+      break;
     }
   }
-}
-
-void print_result() {
-  printf("%g\n", stack[--sp]); // Print popped stack element as calculated result
 }
 
 void debug_code() {
@@ -262,7 +316,19 @@ void debug_code() {
         opcode = "IC_STOREV";
         break;
       case 6:
+        opcode = "IC_LOADV";
+        break;
+      case 7:
         opcode = "IC_PRINT";
+        break;
+      case 8:
+        opcode = "IC_ENTRY";
+        break;
+      case 9:
+        opcode = "IC_RET";
+        break;
+      case 10:
+        opcode = "IC_FRAME";
         break;
     }
     printf("opcode: [%-10s], operand:%g \n", opcode, iCodes[i].operand);

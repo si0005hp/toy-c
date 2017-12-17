@@ -13,6 +13,7 @@ enum {
   NODE_INIT,
   NODE_PRINT, // Temporary
   NODE_NODES,
+  NODE_FUNC_DEF,
 };
 
 typedef struct Node {
@@ -37,6 +38,11 @@ typedef struct Node {
       int max;
       struct Node **nodes;
     };
+    // funcdef
+    struct {
+      char *fname;
+      struct Node *block; // nodes
+    };
   };
 } Node;
 
@@ -54,12 +60,20 @@ enum {
   IC_STOREV,
   IC_LOADV,
   IC_PRINT, // Temporary
+  IC_ENTRY,
+  IC_RET,
+  IC_FRAME,
 };
 
 typedef struct Env {
   char *varname;
   int idx;
 } Env;
+
+typedef struct Label {
+  char *name;
+  int addr;
+} Label;
 
 Node* new_int_node(int i);
 Node* new_float_node(double d);
@@ -70,6 +84,7 @@ Node* new_init_node(Node *left, Node *right);
 Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
 Node* new_nodes();
+Node* new_funcdef_node(Node *idt, Node *block);
 
 void compile_node(Node *node);
 void execute_code();

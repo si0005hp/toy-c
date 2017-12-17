@@ -17,11 +17,13 @@ describe 'main' do
     raw_output.split("\n")
   end
 
-  def run_script_with_print(commands)
+  def run_script_as_main_func_with_print(commands)
     arr = []
     commands.each do |command|
       IO.popen("./main", "r+") do |pipe|
+        pipe.puts "int main() {"
         pipe.puts "print(" + command + ");"
+        pipe.puts "}"
         pipe.close_write
 
         # Read entire output
@@ -32,8 +34,25 @@ describe 'main' do
     arr
   end
 
+  def run_script_as_main_func(commands)
+    raw_output = nil
+    IO.popen("./main", "r+") do |pipe|
+      pipe.puts "int main() {"
+      commands.each do |command|
+        pipe.puts command
+      end
+      pipe.puts "}"
+
+      pipe.close_write
+
+      # Read entire output
+      raw_output = pipe.gets(nil)
+    end
+    raw_output.split("\n")
+  end
+
   it 'integer' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "1",
       "999",
     ])
@@ -44,7 +63,7 @@ describe 'main' do
   end
   
   it 'add' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "1+2",
       "1 + 2",
       "1 + 2 + 3 + 4 + 5",
@@ -57,7 +76,7 @@ describe 'main' do
   end
   
   it 'sub' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "3-1",
       "10 - 3 - 2 - 1",
       "5 + 3 - 2 + 1 - 4 + 9",
@@ -70,7 +89,7 @@ describe 'main' do
   end
   
   it 'mul' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "2*5",
       "2 * 3 * 4",
       "1 * 2 + 3 + 4 * 5",
@@ -85,7 +104,7 @@ describe 'main' do
   end
   
   it 'div' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "10/2",
       "99 / 3 / 11",
       "10 / 2 * 3 + 5 - 3 + 4 * 2 / 8",
@@ -98,7 +117,7 @@ describe 'main' do
   end
   
   it 'paren' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "(1)",
       "(((1)))",
       "(1 + 3)",
@@ -123,7 +142,7 @@ describe 'main' do
   end
   
   it 'float' do
-    result = run_script_with_print([
+    result = run_script_as_main_func_with_print([
       "1.2",
       "1.2345",
       "1 + 2.345 + 6",
@@ -136,19 +155,19 @@ describe 'main' do
   end
 
   it 'var' do
-    result = run_script([
+    result = run_script_as_main_func([
       "int i = 5;",
       "print(i);",
     ])
     expect(result).to eq(["5"])
 
-    result = run_script([
+    result = run_script_as_main_func([
       "int i = 1 + 3 * 4 / 2 + 90 - 10;",
       "print(i);",
     ])
     expect(result).to eq(["87"])
 
-    result = run_script([
+    result = run_script_as_main_func([
       "int x = 3;",
       "int y = 5;",
       "print(x);",
@@ -159,7 +178,7 @@ describe 'main' do
       "5",
     ])
 
-    result = run_script([
+    result = run_script_as_main_func([
       "int x = 3;",
       "x = 5;",
       "print(x);",
@@ -168,7 +187,7 @@ describe 'main' do
       "5",
     ])
 
-    result = run_script([
+    result = run_script_as_main_func([
       "int x = 5;",
       "int y = x + 3;",
       "int z = x + y + 1;",
