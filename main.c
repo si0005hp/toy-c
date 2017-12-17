@@ -4,20 +4,31 @@
 #include "toyc.h"
 #include "y.tab.h"
 
-int yyerror(char const *str);
+int yyerror(State *s, char const *str);
 int new_var(char *varname);
 int idx_var(char *varname);
 int new_label(char *name, int addr);
 int resolve_addr(char *name);
 
 int main(int argc, char **argv) {
-  yyparse();
+  State *s = new_state();
+  if (yyparse(s)) {
+    exit(1);
+  }
+  compile_node(s->node);
+  execute_code();
   return 0;
 }
 
-int yyerror(char const *str) {
+int yyerror(State *s, char const *str) {
   fprintf(stderr, "%s\n", str);
   return 0;
+}
+
+State* new_state() {
+  State *s = malloc(sizeof(State));
+  s->node = NULL;
+  return s;
 }
 
 Node* new_int_node(int i) {

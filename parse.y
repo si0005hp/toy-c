@@ -3,7 +3,7 @@
   #include <stdlib.h>
   #include "toyc.h"
   extern int yylex(void);
-  extern int yyerror(char const *str);
+  extern int yyerror(State *s, char const *str);
 %}
 %union {
   Node *node;
@@ -11,12 +11,12 @@
 %type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def
 %token INT ADD SUB MUL DIV LPAREN RPAREN LC RC SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
+
+%parse-param {State *s}
 %%
 program: func_def
     {
-      compile_node($1);
-      execute_code();
-      exit(0);
+      s->node = $1;
     };
 func_def: INT IDENTIFIER LPAREN RPAREN block
     {
