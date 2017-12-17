@@ -8,16 +8,26 @@
 %union {
   Node *node;
 }
-%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def
+%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def func_defs
 %token INT ADD SUB MUL DIV LPAREN RPAREN LC RC SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
 
 %parse-param {State *s}
 %%
-program: func_def
+program: func_defs
     {
       s->node = $1;
     };
+func_defs: func_def
+    {
+      $$ = new_nodes();
+      append_nodes($$, $1);
+    }
+  | func_defs func_def
+    {
+      $$ = $1;
+      append_nodes($$, $2);
+    }
 func_def: INT IDENTIFIER LPAREN RPAREN block
     {
       $$ = new_funcdef_node($2, $5);
