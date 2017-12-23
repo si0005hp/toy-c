@@ -135,55 +135,66 @@ void compile_node(Node *n) {
     case NODE_INTEGER:
       iCodes[ic_idx].opcode = IC_PUSH;
       iCodes[ic_idx].operand = n->ival;
+      ic_idx++;
       break;
     case NODE_FLOAT:
       iCodes[ic_idx].opcode = IC_PUSH;
       iCodes[ic_idx].operand = n->fval;
+      ic_idx++;
       break;
     case NODE_BINOP_ADD:
       compile_node(n->left);
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_ADD;
+      ic_idx++;
       break;
     case NODE_BINOP_SUB:
       compile_node(n->left);
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_SUB;
+      ic_idx++;
       break;
     case NODE_BINOP_MUL:
       compile_node(n->left);
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_MUL;
+      ic_idx++;
       break;
     case NODE_BINOP_DIV:
       compile_node(n->left);
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_DIV;
+      ic_idx++;
       break;
     case NODE_IDT:
       iCodes[ic_idx].opcode = IC_LOADV;
       iCodes[ic_idx].operand = idx_var(n->idtname);
+      ic_idx++;
       break;
     case NODE_LET:
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_STOREV;
       iCodes[ic_idx].operand = idx_var(n->left->idtname);
+      ic_idx++;
       break;
     case NODE_INIT:
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_STOREV;
       iCodes[ic_idx].operand = new_var(n->left->idtname);
+      ic_idx++;
       break;
     case NODE_PRINT:
       switch (n->target->type) {
         case NODE_IDT:
           iCodes[ic_idx].opcode = IC_PRINT;
           iCodes[ic_idx].operand = idx_var(n->target->idtname);
+          ic_idx++;
           break;
         default:
           compile_node(n->target);
           iCodes[ic_idx].opcode = IC_PRINT;
           iCodes[ic_idx].operand = -1;
+          ic_idx++;
           break;
       }
       break;
@@ -199,6 +210,7 @@ void compile_node(Node *n) {
       e_idx = 0;
       compile_node(n->block);
       iCodes[ic_idx].opcode = IC_RET;
+      ic_idx++;
 
       iCodes[ic_idx_save].opcode = IC_ENTRY;
       new_label(n->fname, ic_idx_save);
@@ -209,13 +221,13 @@ void compile_node(Node *n) {
     case NODE_RETURN:
       compile_node(n->retval);
       iCodes[ic_idx].opcode = IC_RET;
+      ic_idx++;
       break;
     default:
       fprintf(stderr, "Failed to compile_node by illegal node type: %d\n",
           n->type);
       exit(1);
   }
-  ++ic_idx;
 }
 
 int new_var(char *varname) {
@@ -324,7 +336,7 @@ void execute_code() {
 }
 
 void debug_code() {
-  for (int i = 0; i < ic_idx - 1; i++) {
+  for (int i = 0; i < ic_idx; i++) {
     char *opcode;
     switch (iCodes[i].opcode) {
       case 0:
