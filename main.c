@@ -11,6 +11,9 @@ int new_label(char *name, int addr);
 int resolve_addr(char *name);
 
 int main(int argc, char **argv) {
+  if (argc > 1)
+    stdin = fopen(argv[1], "rb");
+
   State *s = new_state();
   if (yyparse(s)) {
     exit(1);
