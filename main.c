@@ -289,9 +289,7 @@ void execute_code() {
       case IC_RET:
         break;
       case IC_FRAME:
-        for (int i = 0; i < iCodes[pc].operand; i++) {
-          stack[sp++] = 0;
-        }
+        sp += iCodes[pc].operand;
         break;
       default:
         fprintf(stderr, "Unknown opcode: %d\n", iCodes[pc].opcode);
