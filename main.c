@@ -310,11 +310,13 @@ void execute_code() {
       case IC_ENTRY:
         break;
       case IC_RET:
+        y = stack[--sp];
         sp = fp;
         fp = stack[--sp];
         if (sp <= 0) {
           return;
         }
+        pc = stack[--sp];
         break;
       case IC_FRAME:
         stack[sp++] = fp;
