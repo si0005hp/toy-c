@@ -51,6 +51,17 @@ describe 'main' do
     raw_output.split("\n")
   end
 
+  def run_script_with_file(fname)
+    raw_output = nil
+    IO.popen("./main %s" % File.expand_path(fname), "r+") do |pipe|
+      pipe.close_write
+
+      # Read entire output
+      raw_output = pipe.gets(nil)
+    end
+    raw_output.split("\n")
+  end
+
   it 'integer' do
     result = run_script_as_main_func_with_print([
       "1",
@@ -202,5 +213,13 @@ describe 'main' do
       "14",
       "27",
     ])
+  end
+
+  it 'func' do 
+    result = run_script_with_file("test/func/simple_func.c")
+    expect(result).to eq(["1"])
+
+    result = run_script_with_file("test/func/simple_func2.c")
+    expect(result).to eq(["1"])
   end
 end
