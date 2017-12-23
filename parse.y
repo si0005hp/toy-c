@@ -8,7 +8,7 @@
 %union {
   Node *node;
 }
-%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def func_defs
+%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def func_call func_defs
 %token INT RETURN ADD SUB MUL DIV LPAREN RPAREN LC RC SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
 
@@ -62,6 +62,11 @@ statement: INT var SEMICOLON
     {
       $$ = new_return_node($2);
     }
+  | expression SEMICOLON
+func_call: IDENTIFIER LPAREN RPAREN
+    {
+      $$ = new_funccall_node($1);
+    }
 expression: term
   | expression ADD term
     {
@@ -71,6 +76,7 @@ expression: term
     {
       $$ = new_binop_node(NODE_BINOP_SUB, $1, $3);
     };
+  | func_call
 term: primary
   | term MUL primary
     {

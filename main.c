@@ -112,6 +112,13 @@ Node* new_funcdef_node(Node *idt, Node *block) {
   return node;
 }
 
+Node* new_funccall_node(Node *idt) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_FUNC_CALL;
+  node->idtname = idt->idtname;
+  return node;
+}
+
 Node* new_return_node(Node *retval) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_RETURN;
@@ -215,6 +222,11 @@ void compile_node(Node *n) {
       iCodes[ic_idx_save + 1].operand = e_idx;
       break;
     }
+    case NODE_FUNC_CALL:
+      iCodes[ic_idx].opcode = IC_CALL;
+      iCodes[ic_idx].operand = resolve_addr(n->idtname);
+      ic_idx++;
+      break;
     case NODE_RETURN:
       compile_node(n->retval);
       iCodes[ic_idx].opcode = IC_RET;
@@ -323,6 +335,10 @@ void execute_code() {
         fp = sp;
         sp += iCodes[pc].operand;
         break;
+      case IC_CALL:
+        stack[sp++] = pc + 1;
+        pc = iCodes[pc].operand;
+        break;
       default:
         fprintf(stderr, "Unknown opcode: %d\n", iCodes[pc].opcode);
         exit(1);
@@ -370,6 +386,9 @@ void debug_code() {
         break;
       case 10:
         opcode = "IC_FRAME";
+        break;
+      case 11:
+        opcode = "IC_CALL";
         break;
     }
     printf("opcode: [%-10s], operand:%g \n", opcode, iCodes[i].operand);

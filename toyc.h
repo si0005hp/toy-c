@@ -14,6 +14,7 @@ enum {
   NODE_PRINT, // Temporary
   NODE_NODES,
   NODE_FUNC_DEF,
+  NODE_FUNC_CALL,
   NODE_RETURN
 };
 
@@ -66,6 +67,7 @@ enum {
   IC_ENTRY,
   IC_RET,
   IC_FRAME,
+  IC_CALL,
 };
 
 typedef struct Env {
@@ -94,6 +96,7 @@ Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
 Node* new_nodes();
 Node* new_funcdef_node(Node *idt, Node *block);
+Node* new_funccall_node(Node *idt);
 Node* new_return_node(Node *retval);
 
 void compile_node(Node *node);
