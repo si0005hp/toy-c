@@ -221,5 +221,8 @@ describe 'main' do
 
     result = run_script_with_file("test/func/simple_func2.c")
     expect(result).to eq(["1"])
+
+    result = run_script_with_file("test/func/simple_func3.c")
+    expect(result).to eq(["1"])
   end
 end

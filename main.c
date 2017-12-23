@@ -264,7 +264,8 @@ int resolve_addr(char *name) {
     if (strcmp(labels[i].name, name) == 0)
       return labels[i].addr;
   }
-  return -1;
+  fprintf(stderr, "Not found entry point: %s\n", name);
+  exit(1);
 }
 
 void execute_code() {
@@ -272,10 +273,6 @@ void execute_code() {
 
   sp = 0;
   pc = resolve_addr("main");
-  if (pc == -1) {
-    fprintf(stderr, "Not found entry point: %s\n", "main");
-    exit(1);
-  }
 
   double x, y;
   for (;;) {
