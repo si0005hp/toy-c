@@ -109,6 +109,13 @@ Node* new_funcdef_node(Node *idt, Node *block) {
   return node;
 }
 
+Node* new_return_node(Node *retval) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_RETURN;
+  node->retval = retval;
+  return node;
+}
+
 ICode iCodes[100];
 int ic_idx;
 
@@ -196,6 +203,10 @@ void compile_node(Node *n) {
       iCodes[ic_idx_save + 1].operand = e_idx;
       break;
     }
+    case NODE_RETURN:
+      compile_node(n->retval);
+      iCodes[ic_idx].opcode = IC_RET;
+      break;
     default:
       fprintf(stderr, "Failed to compile_node by illegal node type: %d\n",
           n->type);

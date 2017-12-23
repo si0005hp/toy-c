@@ -14,6 +14,7 @@ enum {
   NODE_PRINT, // Temporary
   NODE_NODES,
   NODE_FUNC_DEF,
+  NODE_RETURN
 };
 
 typedef struct Node {
@@ -43,6 +44,8 @@ typedef struct Node {
       char *fname;
       struct Node *block; // nodes
     };
+    // return
+    struct Node *retval;
   };
 } Node;
 
@@ -91,6 +94,7 @@ Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
 Node* new_nodes();
 Node* new_funcdef_node(Node *idt, Node *block);
+Node* new_return_node(Node *retval);
 
 void compile_node(Node *node);
 void execute_code();

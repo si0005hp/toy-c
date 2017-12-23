@@ -9,7 +9,7 @@
   Node *node;
 }
 %type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def func_defs
-%token INT ADD SUB MUL DIV LPAREN RPAREN LC RC SEMICOLON EQ IDENTIFIER INTEGER FLOAT
+%token INT RETURN ADD SUB MUL DIV LPAREN RPAREN LC RC SEMICOLON EQ IDENTIFIER INTEGER FLOAT
 %token PRINT
 
 %parse-param {State *s}
@@ -57,6 +57,10 @@ statement: INT var SEMICOLON
   | PRINT LPAREN expression RPAREN SEMICOLON
     {
       $$ = new_print_node($3);
+    }
+  | RETURN expression SEMICOLON
+    {
+      $$ = new_return_node($2);
     }
 expression: term
   | expression ADD term

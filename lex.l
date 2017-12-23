@@ -10,6 +10,7 @@
 
 %%
 "int" return INT;
+"return" return RETURN;
 
 "+"  return ADD;
 "-"  return SUB;
