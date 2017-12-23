@@ -233,7 +233,7 @@ int resolve_addr(char *name) {
 }
 
 void execute_code() {
-  int pc, sp;
+  int pc, sp, fp;
 
   sp = 0;
   pc = resolve_addr("main");
@@ -270,25 +270,32 @@ void execute_code() {
         break;
       case IC_STOREV:
         y = stack[--sp];
-        stack[(int) iCodes[pc].operand] = y;
+        stack[fp + (int) iCodes[pc].operand] = y;
         break;
       case IC_LOADV:
-        y = stack[(int) iCodes[pc].operand];
+        y = stack[fp + (int) iCodes[pc].operand];
         stack[sp++] = y;
         break;
       case IC_PRINT:
         if (iCodes[pc].operand == -1) {
           y = stack[--sp];
         } else {
-          y = stack[(int) iCodes[pc].operand];
+          y = stack[fp + (int) iCodes[pc].operand];
         }
         printf("%g\n", y);
         break;
       case IC_ENTRY:
         break;
       case IC_RET:
+        sp = fp;
+        fp = stack[--sp];
+        if (sp <= 0) {
+          return;
+        }
         break;
       case IC_FRAME:
+        stack[sp++] = fp;
+        fp = sp;
         sp += iCodes[pc].operand;
         break;
       default:
