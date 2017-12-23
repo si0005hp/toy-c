@@ -204,13 +204,10 @@ void compile_node(Node *n) {
       break;
     case NODE_FUNC_DEF: {
       int ic_idx_save = ic_idx;
+      ic_idx += 2;
 
-      ic_idx++;
-      ic_idx++;
       e_idx = 0;
       compile_node(n->block);
-      iCodes[ic_idx].opcode = IC_RET;
-      ic_idx++;
 
       iCodes[ic_idx_save].opcode = IC_ENTRY;
       new_label(n->fname, ic_idx_save);
