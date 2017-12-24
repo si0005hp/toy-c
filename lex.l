@@ -22,6 +22,7 @@
 "}"  return RC;
 ";"  return SEMICOLON;
 "="  return EQ;
+","  return COMMA;
 
 "print"  return PRINT; // Temporary
 

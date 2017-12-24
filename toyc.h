@@ -16,6 +16,7 @@ enum {
   NODE_NODES,
   NODE_FUNC_DEF,
   NODE_FUNC_CALL,
+  NODE_FUNC_PARAM,
   NODE_RETURN
 };
 
@@ -47,6 +48,10 @@ typedef struct Node {
     struct {
       char *fname;
       struct Node *block; // nodes
+    };
+    // funcparam
+    struct {
+      char *pname;
     };
     // return
     struct Node *retval;
@@ -102,6 +107,7 @@ void append_nodes(Node *nodes, Node *node);
 Node* new_nodes();
 Node* new_funcdef_node(Node *idt, Node *block);
 Node* new_funccall_node(Node *idt);
+Node* new_funcparam_node(Node *idt);
 Node* new_return_node(Node *retval);
 
 void compile_node(Node *node);

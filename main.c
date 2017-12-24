@@ -126,6 +126,13 @@ Node* new_funccall_node(Node *idt) {
   return node;
 }
 
+Node* new_funcparam_node(Node *idt) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_FUNC_PARAM;
+  node->pname = idt->idtname;
+  return node;
+}
+
 Node* new_return_node(Node *retval) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_RETURN;
