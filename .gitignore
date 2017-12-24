@@ -9,3 +9,4 @@ y.output
 main
 
 test_input.c
+spec/main_spec.rb~

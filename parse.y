@@ -76,7 +76,6 @@ expression: term
     {
       $$ = new_binop_node(NODE_BINOP_SUB, $1, $3);
     };
-  | func_call
 term: primary
   | term MUL primary
     {
@@ -94,6 +93,7 @@ primary: INTEGER
       $$ = $2;
     };
   | var
+  | func_call
 block: LC statements RC
     {
       $$ = $2;

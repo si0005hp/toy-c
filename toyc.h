@@ -68,6 +68,7 @@ enum {
   IC_RET,
   IC_FRAME,
   IC_CALL,
+  IC_POPR,
 };
 
 typedef struct Env {

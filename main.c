@@ -226,6 +226,8 @@ void compile_node(Node *n) {
       iCodes[ic_idx].opcode = IC_CALL;
       iCodes[ic_idx].operand = resolve_addr(n->idtname);
       ic_idx++;
+      iCodes[ic_idx].opcode = IC_POPR;
+      ic_idx++;
       break;
     case NODE_RETURN:
       compile_node(n->retval);
@@ -326,7 +328,7 @@ void execute_code() {
           return;
         }
         pc = stack[--sp];
-        break;
+        continue;
       case IC_FRAME:
         stack[sp++] = fp;
         fp = sp;
@@ -335,6 +337,9 @@ void execute_code() {
       case IC_CALL:
         stack[sp++] = pc + 1;
         pc = iCodes[pc].operand;
+        continue;
+      case IC_POPR:
+        stack[sp++] = y;
         break;
       default:
         fprintf(stderr, "Unknown opcode: %d\n", iCodes[pc].opcode);
@@ -386,6 +391,9 @@ void debug_code() {
         break;
       case 11:
         opcode = "IC_CALL";
+        break;
+      case 12:
+        opcode = "IC_POPR";
         break;
     }
     printf("opcode: [%-10s], operand:%g \n", opcode, iCodes[i].operand);
