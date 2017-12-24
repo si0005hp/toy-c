@@ -15,8 +15,8 @@ enum {
   NODE_PRINT, // Temporary
   NODE_NODES,
   NODE_FUNC_DEF,
-  NODE_FUNC_CALL,
   NODE_FUNC_PARAM,
+  NODE_FUNC_CALL,
   NODE_RETURN
 };
 
@@ -47,6 +47,7 @@ typedef struct Node {
     // funcdef
     struct {
       char *fname;
+      struct Node *params; // nodes
       struct Node *block; // nodes
     };
     // funcparam
@@ -69,20 +70,28 @@ enum {
   IC_SUB,
   IC_MUL,
   IC_DIV,
-  IC_STOREV,
-  IC_LOADV,
+  IC_STOREL,
+  IC_LOADL,
   IC_PRINT, // Temporary
   IC_ENTRY,
   IC_RET,
   IC_FRAME,
   IC_CALL,
   IC_POPR,
+  IC_STOREA,
+  IC_LOADA,
 };
 
 typedef struct Env {
+  int type;
   char *varname;
   int idx;
 } Env;
+
+enum {
+  VAR_LOCAL,
+  VAR_ARG,
+};
 
 typedef struct Label {
   char *name;
@@ -105,7 +114,7 @@ Node* new_init_node(Node *left, Node *right);
 Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
 Node* new_nodes();
-Node* new_funcdef_node(Node *idt, Node *block);
+Node* new_funcdef_node(Node *idt, Node *params, Node *block);
 Node* new_funccall_node(Node *idt);
 Node* new_funcparam_node(Node *idt);
 Node* new_return_node(Node *retval);

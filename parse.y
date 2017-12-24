@@ -30,10 +30,11 @@ func_defs: func_def
     }
 func_def: INT IDENTIFIER LPAREN RPAREN block
     {
-      $$ = new_funcdef_node($2, $5);
+      $$ = new_funcdef_node($2, new_nodes(), $5);
     }
   | INT IDENTIFIER LPAREN func_params RPAREN block
     {
+      $$ = new_funcdef_node($2, $4, $6);
     }
 func_params: INT IDENTIFIER
     {

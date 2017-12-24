@@ -5,8 +5,10 @@
 #include "y.tab.h"
 
 int yyerror(State *s, char const *str);
-int new_var(char *varname);
+int new_var(char *varname, int type);
 int idx_var(char *varname);
+int cnt_var(int type);
+Env resolve_var(char *varname);
 int new_label(char *name, int addr);
 int resolve_addr(char *name);
 
@@ -111,10 +113,11 @@ Node* new_nodes() {
   return node;
 }
 
-Node* new_funcdef_node(Node *idt, Node *block) {
+Node* new_funcdef_node(Node *idt, Node *params, Node *block) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_FUNC_DEF;
   node->fname = idt->idtname;
+  node->params = params;
   node->block = block;
   return node;
 }
@@ -187,24 +190,33 @@ void compile_node(Node *n) {
       iCodes[ic_idx].opcode = IC_DIV;
       ic_idx++;
       break;
-    case NODE_IDT:
-      iCodes[ic_idx].opcode = IC_LOADV;
-      iCodes[ic_idx].operand = idx_var(n->idtname);
+    case NODE_IDT: {
+      Env e = resolve_var(n->idtname);
+      if (e.type == VAR_LOCAL)
+        iCodes[ic_idx].opcode = IC_LOADL;
+      else if (e.type == VAR_ARG)
+        iCodes[ic_idx].opcode = IC_LOADA;
+      iCodes[ic_idx].operand = e.idx;
       ic_idx++;
       break;
+    }
     case NODE_LVAR:
-      new_var(n->lname);
+      new_var(n->lname, VAR_LOCAL);
       break;
     case NODE_LET:
       compile_node(n->right);
-      iCodes[ic_idx].opcode = IC_STOREV;
-      iCodes[ic_idx].operand = idx_var(n->left->idtname);
+      Env e = resolve_var(n->left->idtname);
+      if (e.type == VAR_LOCAL)
+        iCodes[ic_idx].opcode = IC_STOREL;
+      else if (e.type == VAR_ARG)
+        iCodes[ic_idx].opcode = IC_STOREA;
+      iCodes[ic_idx].operand = e.idx;
       ic_idx++;
       break;
     case NODE_INIT:
       compile_node(n->right);
-      iCodes[ic_idx].opcode = IC_STOREV;
-      iCodes[ic_idx].operand = new_var(n->left->idtname);
+      iCodes[ic_idx].opcode = IC_STOREL;
+      iCodes[ic_idx].operand = new_var(n->left->idtname, VAR_LOCAL);
       ic_idx++;
       break;
     case NODE_PRINT:
@@ -231,14 +243,18 @@ void compile_node(Node *n) {
       ic_idx += 2;
 
       e_idx = 0;
+      compile_node(n->params);
       compile_node(n->block);
 
       iCodes[ic_idx_save].opcode = IC_ENTRY;
       new_label(n->fname, ic_idx_save);
       iCodes[ic_idx_save + 1].opcode = IC_FRAME;
-      iCodes[ic_idx_save + 1].operand = e_idx;
+      iCodes[ic_idx_save + 1].operand = cnt_var(VAR_LOCAL);
       break;
     }
+    case NODE_FUNC_PARAM:
+      new_var(n->pname, VAR_ARG);
+      break;
     case NODE_FUNC_CALL:
       iCodes[ic_idx].opcode = IC_CALL;
       iCodes[ic_idx].operand = resolve_addr(n->idtname);
@@ -258,7 +274,7 @@ void compile_node(Node *n) {
   }
 }
 
-int new_var(char *varname) {
+int new_var(char *varname, int type) {
   for (int i = 0; i <= e_idx - 1; i++) {
     if (strcmp(env[i].varname, varname) == 0) {
       fprintf(stderr, "Duplicate variable: %s\n", varname);
@@ -266,6 +282,7 @@ int new_var(char *varname) {
     }
   }
   env[e_idx].varname = varname;
+  env[e_idx].type = type;
   env[e_idx].idx = e_idx;
   return e_idx++;
 }
@@ -276,6 +293,24 @@ int idx_var(char *varname) {
       return env[i].idx;
   }
   return -1;
+}
+
+int cnt_var(int type) {
+  int cnt = 0;
+  for (int i = 0; i <= e_idx - 1; i++) {
+    if (env[i].type == type)
+      cnt++;
+  }
+  return cnt;
+}
+
+Env resolve_var(char *varname) {
+  for (int i = e_idx - 1; i >= 0; i--) {
+    if (strcmp(env[i].varname, varname) == 0)
+      return env[i];
+  }
+  fprintf(stderr, "Not found variable: %s\n", varname);
+  exit(1);
 }
 
 int new_label(char *name, int addr) {
@@ -325,11 +360,13 @@ void execute_code() {
         x = stack[--sp];
         stack[sp++] = x / y;
         break;
-      case IC_STOREV:
+      case IC_STOREL:
+      case IC_STOREA:
         y = stack[--sp];
         stack[fp + (int) iCodes[pc].operand] = y;
         break;
-      case IC_LOADV:
+      case IC_LOADL:
+      case IC_LOADA:
         y = stack[fp + (int) iCodes[pc].operand];
         stack[sp++] = y;
         break;
@@ -395,10 +432,10 @@ void debug_code() {
         opcode = "IC_DIV";
         break;
       case 5:
-        opcode = "IC_STOREV";
+        opcode = "IC_STOREL";
         break;
       case 6:
-        opcode = "IC_LOADV";
+        opcode = "IC_LOADL";
         break;
       case 7:
         opcode = "IC_PRINT";
@@ -417,6 +454,12 @@ void debug_code() {
         break;
       case 12:
         opcode = "IC_POPR";
+        break;
+      case 13:
+        opcode = "IC_STOREA";
+        break;
+      case 14:
+        opcode = "IC_LOADA";
         break;
     }
     printf("opcode: [%-10s], operand:%g \n", opcode, iCodes[i].operand);
