@@ -44,11 +44,14 @@ typedef struct Node {
       int max;
       struct Node **nodes;
     };
-    // funcdef
+    // funcdef or funccall
     struct {
       char *fname;
-      struct Node *params; // nodes
-      struct Node *block; // nodes
+      struct Node *args;
+      struct {
+        struct Node *params; // nodes
+        struct Node *block; // nodes
+      };
     };
     // funcparam
     struct {
@@ -115,7 +118,7 @@ Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
 Node* new_nodes();
 Node* new_funcdef_node(Node *idt, Node *params, Node *block);
-Node* new_funccall_node(Node *idt);
+Node* new_funccall_node(Node *idt, Node *args);
 Node* new_funcparam_node(Node *idt);
 Node* new_return_node(Node *retval);
 

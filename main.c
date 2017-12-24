@@ -122,10 +122,11 @@ Node* new_funcdef_node(Node *idt, Node *params, Node *block) {
   return node;
 }
 
-Node* new_funccall_node(Node *idt) {
+Node* new_funccall_node(Node *idt, Node *args) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_FUNC_CALL;
-  node->idtname = idt->idtname;
+  node->fname = idt->idtname;
+  node->args = args;
   return node;
 }
 
@@ -256,8 +257,9 @@ void compile_node(Node *n) {
       new_var(n->pname, VAR_ARG);
       break;
     case NODE_FUNC_CALL:
+      compile_node(n->args);
       iCodes[ic_idx].opcode = IC_CALL;
-      iCodes[ic_idx].operand = resolve_addr(n->idtname);
+      iCodes[ic_idx].operand = resolve_addr(n->fname);
       ic_idx++;
       iCodes[ic_idx].opcode = IC_POPR;
       ic_idx++;
@@ -361,13 +363,19 @@ void execute_code() {
         stack[sp++] = x / y;
         break;
       case IC_STOREL:
-      case IC_STOREA:
         y = stack[--sp];
         stack[fp + (int) iCodes[pc].operand] = y;
         break;
+      case IC_STOREA:
+        y = stack[--sp];
+        stack[fp + (int) iCodes[pc].operand - 3] = y;
+        break;
       case IC_LOADL:
-      case IC_LOADA:
         y = stack[fp + (int) iCodes[pc].operand];
+        stack[sp++] = y;
+        break;
+      case IC_LOADA:
+        y = stack[fp + (int) iCodes[pc].operand - 3];
         stack[sp++] = y;
         break;
       case IC_PRINT:

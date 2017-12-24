@@ -8,7 +8,7 @@
 %union {
   Node *node;
 }
-%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def func_params func_call func_defs
+%type <node> INTEGER FLOAT IDENTIFIER primary expression term statement statements program var block func_def func_params func_args func_call func_defs
 %token INT RETURN ADD SUB MUL DIV LPAREN RPAREN LC RC SEMICOLON EQ COMMA IDENTIFIER INTEGER FLOAT
 %token PRINT
 
@@ -46,6 +46,16 @@ func_params: INT IDENTIFIER
       $$ = $1;
       append_nodes($$, new_funcparam_node($4));
     }
+func_args: expression
+    {
+      $$ = new_nodes();
+      append_nodes($$, $1);
+    }
+  | func_args COMMA expression
+    {
+      $$ = $1;
+      append_nodes($$, $3);
+    }
 statements: statement
     {
       $$ = new_nodes();
@@ -79,7 +89,11 @@ statement: INT var SEMICOLON
   | expression SEMICOLON
 func_call: IDENTIFIER LPAREN RPAREN
     {
-      $$ = new_funccall_node($1);
+      $$ = new_funccall_node($1, new_nodes());
+    }
+  | IDENTIFIER LPAREN func_args RPAREN
+    {
+      $$ = new_funccall_node($1, $3);
     }
 expression: term
   | expression ADD term
