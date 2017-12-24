@@ -63,6 +63,13 @@ Node* new_idt_node(char *idtname) {
   return node;
 }
 
+Node* new_lvar_node(Node *idt) {
+  Node *node = malloc(sizeof(Node));
+  node->type = NODE_LVAR;
+  node->lname = idt->idtname;
+  return node;
+}
+
 Node* new_let_node(Node *left, Node *right) {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_LET;
@@ -178,6 +185,9 @@ void compile_node(Node *n) {
       iCodes[ic_idx].operand = idx_var(n->idtname);
       ic_idx++;
       break;
+    case NODE_LVAR:
+      new_var(n->lname);
+      break;
     case NODE_LET:
       compile_node(n->right);
       iCodes[ic_idx].opcode = IC_STOREV;
@@ -242,6 +252,12 @@ void compile_node(Node *n) {
 }
 
 int new_var(char *varname) {
+  for (int i = 0; i <= e_idx - 1; i++) {
+    if (strcmp(env[i].varname, varname) == 0) {
+      fprintf(stderr, "Duplicate variable: %s\n", varname);
+      exit(1);
+    }
+  }
   env[e_idx].varname = varname;
   env[e_idx].idx = e_idx;
   return e_idx++;

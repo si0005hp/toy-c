@@ -199,6 +199,41 @@ describe 'main' do
     ])
 
     result = run_script_as_main_func([
+      "int x;",
+      "x = 5;",
+      "print(x);",
+    ])
+    expect(result).to eq([
+      "5",
+    ])
+
+    result = run_script_as_main_func([
+      "int x;",
+      "int y;",
+      "int z;",
+      "x = 3;",
+      "y = 5;",
+      "z = x + y;",
+      "print(x);",
+      "print(y);",
+      "print(z);",
+      "y = 3;",
+      "x = 5;",
+      "z = x - y;",
+      "print(x);",
+      "print(y);",
+      "print(z);",
+    ])
+    expect(result).to eq([
+      "3",
+      "5",
+      "8",
+      "5",
+      "3",
+      "2",
+    ])
+
+    result = run_script_as_main_func([
       "int x = 5;",
       "int y = x + 3;",
       "int z = x + y + 1;",

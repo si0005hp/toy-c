@@ -9,6 +9,7 @@ enum {
   NODE_BINOP_MUL,
   NODE_BINOP_DIV,
   NODE_IDT,
+  NODE_LVAR,
   NODE_LET,
   NODE_INIT,
   NODE_PRINT, // Temporary
@@ -32,6 +33,8 @@ typedef struct Node {
     };
     // identifier
     char *idtname;
+    // lvar
+    char *lname;
     // print (Temporary)
     struct Node *target;
     // nodes
@@ -91,6 +94,7 @@ Node* new_int_node(int i);
 Node* new_float_node(double d);
 Node* new_binop_node(int op, Node *left, Node *right);
 Node* new_idt_node(char *idtname);
+Node* new_lvar_node(Node *idt);
 Node* new_let_node(Node *left, Node *right);
 Node* new_init_node(Node *left, Node *right);
 Node* new_print_node(Node *target); // Temporary

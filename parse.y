@@ -44,7 +44,7 @@ statements: statement
     }
 statement: INT var SEMICOLON
     {
-      $$ = $2;
+      $$ = new_lvar_node($2);
     }
   | var EQ expression SEMICOLON
     {
