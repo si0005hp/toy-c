@@ -271,6 +271,7 @@ void compile_node(Node *n) {
       iCodes[ic_idx].operand = resolve_addr(n->fname);
       ic_idx++;
       iCodes[ic_idx].opcode = IC_POPR;
+      iCodes[ic_idx].operand = n->args->len;
       ic_idx++;
       break;
     case NODE_RETURN:
@@ -416,6 +417,7 @@ void execute_code() {
         pc = iCodes[pc].operand;
         continue;
       case IC_POPR:
+        sp -= iCodes[pc].operand;
         stack[sp++] = y;
         break;
       default:
