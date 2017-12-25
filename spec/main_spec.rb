@@ -271,5 +271,8 @@ describe 'main' do
 
     result = run_script_with_file("test/func/call_func_param2.c")
     expect(result).to eq(["18"])
+
+    result = run_script_with_file("test/func/comb_func_var.c")
+    expect(result).to eq(["3150"])
   end
 end
