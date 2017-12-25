@@ -265,5 +265,11 @@ describe 'main' do
 
     result = run_script_with_file("test/func/call_func2.c")
     expect(result).to eq(["9", "9", "9"])
+
+    result = run_script_with_file("test/func/call_func_param.c")
+    expect(result).to eq(["8"])
+
+    result = run_script_with_file("test/func/call_func_param2.c")
+    expect(result).to eq(["18"])
   end
 end

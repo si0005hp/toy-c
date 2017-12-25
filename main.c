@@ -105,6 +105,14 @@ void append_nodes(Node *nodes, Node *node) {
   _n->len++;
 }
 
+void reverse_nodes(Node *nodes) {
+  Node *_n = nodes;
+  Node **rev_nodes = malloc(sizeof(Node*) * _n->len);
+  for (int i = 0; i < _n->len; i++)
+    rev_nodes[_n->len - 1 - i] = _n->nodes[i];
+  _n->nodes = rev_nodes;
+}
+
 Node* new_nodes() {
   Node *node = malloc(sizeof(Node));
   node->type = NODE_NODES;
@@ -257,6 +265,7 @@ void compile_node(Node *n) {
       new_var(n->pname, VAR_ARG);
       break;
     case NODE_FUNC_CALL:
+      reverse_nodes(n->args); // To correct args order
       compile_node(n->args);
       iCodes[ic_idx].opcode = IC_CALL;
       iCodes[ic_idx].operand = resolve_addr(n->fname);
@@ -368,14 +377,14 @@ void execute_code() {
         break;
       case IC_STOREA:
         y = stack[--sp];
-        stack[fp + (int) iCodes[pc].operand - 3] = y;
+        stack[fp - (int) iCodes[pc].operand - 3] = y;
         break;
       case IC_LOADL:
         y = stack[fp + (int) iCodes[pc].operand];
         stack[sp++] = y;
         break;
       case IC_LOADA:
-        y = stack[fp + (int) iCodes[pc].operand - 3];
+        y = stack[fp - (int) iCodes[pc].operand - 3];
         stack[sp++] = y;
         break;
       case IC_PRINT:

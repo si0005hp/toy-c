@@ -116,6 +116,7 @@ Node* new_let_node(Node *left, Node *right);
 Node* new_init_node(Node *left, Node *right);
 Node* new_print_node(Node *target); // Temporary
 void append_nodes(Node *nodes, Node *node);
+void reverse_nodes(Node *nodes);
 Node* new_nodes();
 Node* new_funcdef_node(Node *idt, Node *params, Node *block);
 Node* new_funccall_node(Node *idt, Node *args);
